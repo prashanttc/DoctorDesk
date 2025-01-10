@@ -7,6 +7,8 @@ import { Form } from "@/components/ui/form";
 import CustomInput from "../CustomInput";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
+import { UserFormValidation } from "@/lib/validation";
+import { useRouter } from "next/navigation";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -18,22 +20,31 @@ export enum FormFieldType {
   SKELETON = "skeleton",
 }
 
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-});
+const formSchema = UserFormValidation;
 
 const PatientForm = () => {
-    const[isLoading, setIsLoading]= useState(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      name: "",
+      email: "",
+      phone: ""
     },
   });
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true)  
-    console.log(values);
+
+  async function onSubmit({ email, name, phone }: z.infer<typeof formSchema>) {
+    setIsLoading(true)
+    try{
+        // const userData = { email, name, phone };
+        // const user = await createUser(userData)
+        // if(user) router.push(`/patients/${user.$id}/register`)      
+    }catch(error){
+      console.log("error",error)
+    }
   }
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
@@ -66,7 +77,7 @@ const PatientForm = () => {
           control={form.control}
           fieldType={FormFieldType.PHONE_INPUT}
         />
-<SubmitButton isloading={isLoading}>Get started </SubmitButton>
+        <SubmitButton isloading={isLoading}>Get started </SubmitButton>
       </form>
     </Form>
   );

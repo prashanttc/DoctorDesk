@@ -44,7 +44,7 @@ const RenderField = ({ field, props }: { field: any; props: customProps }) => {
         case FormFieldType.PHONE_INPUT:
             return (
                 <PhoneInput
-                    className='input-phone'
+                    className='input-phone '
                     placeholder={placeholder}
                     value={field.value as E164Number | undefined}
                     onChange={field.onChange}
