@@ -9,6 +9,7 @@ import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
+import { createUser } from "@/lib/actions/patient.actions";
 
 export enum FormFieldType {
   INPUT = "input",
@@ -34,17 +35,26 @@ const PatientForm = () => {
     },
   });
 
-  async function onSubmit({ email, name, phone }: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true)
-    try{
-        // const userData = { email, name, phone };
-        // const user = await createUser(userData)
-        // if(user) router.push(`/patients/${user.$id}/register`)      
-    }catch(error){
-      console.log("error",error)
+    try {
+      const user = {
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+      };
+      const newUser = await createUser(user)
+      console.log("",newUser)
+      
+      if (newUser){
+        router.push(`/patients/${newUser.$id}/register`)
+      } 
+    } catch (error) {
+      console.log("error", error)
+      setIsLoading(false)
     }
   }
-  
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
