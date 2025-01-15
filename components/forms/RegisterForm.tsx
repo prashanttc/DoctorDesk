@@ -12,10 +12,11 @@ import { useRouter } from "next/navigation";
 import { createUser } from "@/lib/actions/patient.actions";
 import { FormFieldType } from "./PatientForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Doctors, GenderOptions } from "@/constant";
+import { Doctors, GenderOptions, IdentificationTypes } from "@/constant";
 import { Label } from "../ui/label";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
+import FileUploader from "../FileUploader";
 
 const formSchema = UserFormValidation;
 
@@ -172,7 +173,112 @@ const RegisterForm = ({ user }: { user: User }) => {
                         </SelectItem>
                     ))}
                 </CustomInput>
+                <div className="flex flex-col xl:flex-row gap-6">
+                    <CustomInput
+                        name="insuranceProvider"
+                        placeholder="LIC"
+                        label="insurance provider"
+                        control={form.control}
+                        fieldType={FormFieldType.INPUT}
+                    />
+                    <CustomInput
+                        name="insurancePolicyNumber"
+                        placeholder="ABC3483482323"
+                        label="Insurance policy number"
+                        control={form.control}
+                        fieldType={FormFieldType.INPUT}
+                    />
+                </div>
+                <div className="flex flex-col xl:flex-row gap-6">
+                    <CustomInput
+                        name="allergies"
+                        placeholder="peanut , cashew"
+                        label="Allergies"
+                        control={form.control}
+                        fieldType={FormFieldType.TEXTAREA}
+                    />
+                    <CustomInput
+                        name="currentMedication"
+                        placeholder="Paracetamol 500g"
+                        label="current medication"
+                        control={form.control}
+                        fieldType={FormFieldType.TEXTAREA}
+                    />
+                </div>
+                <div className="flex flex-col xl:flex-row gap-6">
+                    <CustomInput
+                        name="familyMedicalHistory"
+                        placeholder="alziemer"
+                        label="Family medical history"
+                        control={form.control}
+                        fieldType={FormFieldType.TEXTAREA}
+                    />
+                    <CustomInput
+                        name="pastMedicalHistory"
+                        placeholder="hyperhydrosis"
+                        label="past medical history"
+                        control={form.control}
+                        fieldType={FormFieldType.TEXTAREA}
+                    />
+                </div>
 
+                <section className="space-y-6">
+                    <div className="mb-9 space-y-1">
+                        <h2 className="sub-header">Identification and verification</h2>
+                    </div>
+                </section>
+                <CustomInput
+                    name="identificationType"
+                    placeholder="select your identification type"
+                    label="identification type"
+                    control={form.control}
+                    fieldType={FormFieldType.SELECT}
+                >  {IdentificationTypes.map((type) => (
+                    <SelectItem key={type} value={type}>
+                        {type}
+                    </SelectItem>
+                ))}
+                </CustomInput>
+                <CustomInput
+                    name="identificationNumber"
+                    placeholder="12345678876"
+                    label="identification number"
+                    control={form.control}
+                    fieldType={FormFieldType.INPUT}
+                />
+                <CustomInput
+                    name="identificationDocument"
+                    label="identification Document"
+                    control={form.control}
+                    fieldType={FormFieldType.SKELETON}
+                    renderSkeleton={(field) => (
+                        <FileUploader files={field.value} onChange={field.onChange} />
+                    )}
+                />
+
+                <section className="space-y-6">
+                    <div className="mb-9 space-y-1">
+                        <h2 className="sub-header">Consent and Privacy</h2>
+                    </div>
+                </section>
+                <CustomInput 
+                name="disclosureConsent"
+                label="I consent to diclosure of information"
+                fieldType={FormFieldType.CHECKBOX}
+                control={form.control}
+                />
+                <CustomInput 
+                name="privacyConsent"
+                label="I consent to privacy policy"
+                fieldType={FormFieldType.CHECKBOX}
+                control={form.control}
+                />
+                <CustomInput 
+                name="treatmentConsent"
+                label="I consent to treatment"
+                fieldType={FormFieldType.CHECKBOX}
+                control={form.control}
+                />
 
                 <SubmitButton isloading={isLoading}>Get started </SubmitButton>
             </form>
