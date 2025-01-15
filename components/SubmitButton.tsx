@@ -11,7 +11,7 @@ const SubmitButton = ({ className, children, isloading }: Props) => {
         <Button type='submit' disabled={isloading} className={className ?? "shad-primary-btn w-full"}>
             {isloading ? (
                 <div className='flex items-center gap-4 text-white'>
-                    <Image src='assets/icons/loader.svg' width={24} alt='loader' className='animate-spin' height={24}/> 
+                    <Image src='/assets/icons/loader.svg' width={24} alt='loader' className='animate-spin' height={24}/> 
                     Loading...
                 </div>
             ) : children}

@@ -7,18 +7,18 @@ import { Form, FormControl } from "@/components/ui/form";
 import CustomInput from "../CustomInput";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
-import { UserFormValidation } from "@/lib/validation";
-import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient.actions";
+import { PatientFormValidation } from "@/lib/validation";
 import { FormFieldType } from "./PatientForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { Doctors, GenderOptions, IdentificationTypes } from "@/constant";
+import { Doctors, GenderOptions, IdentificationTypes, PatientFormDefaultValues } from "@/constant";
 import { Label } from "../ui/label";
 import { SelectItem } from "../ui/select";
 import Image from "next/image";
 import FileUploader from "../FileUploader";
+import { useRouter } from "next/navigation";
+import { registerPatient } from "@/lib/actions/patient.actions";
 
-const formSchema = UserFormValidation;
+const formSchema = PatientFormValidation;
 
 const RegisterForm = ({ user }: { user: User }) => {
     const router = useRouter();
@@ -26,6 +26,7 @@ const RegisterForm = ({ user }: { user: User }) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            ...PatientFormDefaultValues,
             name: "",
             email: "",
             phone: ""
@@ -33,23 +34,35 @@ const RegisterForm = ({ user }: { user: User }) => {
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        setIsLoading(true)
+        setIsLoading(true);
+        let formData;
+        if (values.identificationDocument && values.identificationDocument.length > 0) {
+            const blobfile = new Blob([values.identificationDocument[0]], {
+                type: values.identificationDocument[0].type,
+            })
+            formData = new FormData();
+            formData.append('blobfile', blobfile);
+            formData.append('fileName', values.identificationDocument[0].name)
+        }
         try {
-            const user = {
-                name: values.name,
-                email: values.email,
-                phone: values.phone,
-            };
-            const newUser = await createUser(user)
-            console.log("", newUser)
-
-            if (newUser) {
-                router.push(`/patients/${newUser.$id}/register`)
+            const patientData = {
+                ...values,
+                userId: user.$id,
+                birthDate: new Date(values.birthDate),
+                identificationDocument: formData
             }
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-expect-error
+            const patient = await registerPatient(patientData);
+            if(patient) router.push(`/patients/${user.$id}/new-appointment`)
+            setIsLoading(false)
         } catch (error) {
-            console.log("error", error)
+            console.log(error)
             setIsLoading(false)
         }
+        finally{
+        setIsLoading(false)
+    }
     }
 
     return (
@@ -261,23 +274,23 @@ const RegisterForm = ({ user }: { user: User }) => {
                         <h2 className="sub-header">Consent and Privacy</h2>
                     </div>
                 </section>
-                <CustomInput 
-                name="disclosureConsent"
-                label="I consent to diclosure of information"
-                fieldType={FormFieldType.CHECKBOX}
-                control={form.control}
+                <CustomInput
+                    name="disclosureConsent"
+                    label="I consent to diclosure of information"
+                    fieldType={FormFieldType.CHECKBOX}
+                    control={form.control}
                 />
-                <CustomInput 
-                name="privacyConsent"
-                label="I consent to privacy policy"
-                fieldType={FormFieldType.CHECKBOX}
-                control={form.control}
+                <CustomInput
+                    name="privacyConsent"
+                    label="I consent to privacy policy"
+                    fieldType={FormFieldType.CHECKBOX}
+                    control={form.control}
                 />
-                <CustomInput 
-                name="treatmentConsent"
-                label="I consent to treatment"
-                fieldType={FormFieldType.CHECKBOX}
-                control={form.control}
+                <CustomInput
+                    name="treatmentConsent"
+                    label="I consent to treatment"
+                    fieldType={FormFieldType.CHECKBOX}
+                    control={form.control}
                 />
 
                 <SubmitButton isloading={isLoading}>Get started </SubmitButton>

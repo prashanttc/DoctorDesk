@@ -2,8 +2,9 @@
 "use server";
 
 import { ID, Query } from "node-appwrite";
-import { users } from "../appwrite.config";
+import { apprwiteConfig, databases, storage, users } from "../appwrite.config";
 import { parseStringify } from "../utils";
+import { InputFile } from "node-appwrite/file";
 
 export const createUser = async (user: CreateUserParams) => {
   try {
@@ -35,5 +36,37 @@ export const getUser = async (userId: string) => {
     return parseStringify(user);
   } catch (error) {
     console.log("error fetching user details", error);
+  }
+};
+
+export const registerPatient = async ({
+  identificationDocument,
+  ...patient
+}: RegisterUserParams) => {
+  try {
+    console.log("ident", apprwiteConfig.bucketId  )
+    const inputFile = InputFile.fromBuffer(
+      identificationDocument?.get("blobfile") as Blob,
+      identificationDocument?.get("fileName") as string
+    );
+    const file = await storage.createFile(
+      apprwiteConfig.bucketId,
+      ID.unique(),
+      inputFile
+    );
+    const newPatient = await databases.createDocument(
+      apprwiteConfig.databaseId,
+      apprwiteConfig.patientCollectionId,
+      ID.unique(),
+      {
+        identificationDocumentId: file?.$id || null,
+        identificationDocumentUrl: `${apprwiteConfig.endpoint}/storage/buckets/${apprwiteConfig.bucketId}/files/${file.$id}/view?project=${apprwiteConfig.projectId}`,
+        ...patient
+      }
+    );
+
+    return parseStringify(newPatient);
+  } catch (error) {
+    console.log(error);
   }
 };
