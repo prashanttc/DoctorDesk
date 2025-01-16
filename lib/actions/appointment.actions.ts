@@ -3,6 +3,7 @@ import { ID, Query } from "node-appwrite";
 import { apprwiteConfig, databases } from "../appwrite.config";
 import { parseStringify } from "../utils";
 import { Appointment } from "@/types/actions";
+import { revalidatePath } from "next/cache";
 
 export const createAppointment = async (
   appointment: CreateAppointmentParams
@@ -34,38 +35,61 @@ export const getAppointment = async (appointmentId: string) => {
   }
 };
 
-export const recentAppointments = async()=>{
-  try{
-  const appointment = await databases.listDocuments(
-    apprwiteConfig.databaseId,
-    apprwiteConfig.appointmentCollectionId,
-    [Query.orderDesc('$createdAt')]
-  )
-const initialCount = {
-  scheduledCount:0,
-  pendingCount:0,
-  cancelledCount:0,
-}
- const count = (appointment.documents as Appointment[]).reduce((acc,appointment)=>{
-  if(appointment.status ==="scheduled"){
-    acc.scheduledCount += 1;
-  }else if(appointment.status === 'pending'){
-    acc.pendingCount += 1;
-  }else if(appointment.status === 'cancelled'){
-    acc.cancelledCount += 1;
+export const recentAppointments = async () => {
+  try {
+    const appointment = await databases.listDocuments(
+      apprwiteConfig.databaseId,
+      apprwiteConfig.appointmentCollectionId,
+      [Query.orderDesc("$createdAt")]
+    );
+    const initialCount = {
+      scheduledCount: 0,
+      pendingCount: 0,
+      cancelledCount: 0,
+    };
+    const count = (appointment.documents as Appointment[]).reduce(
+      (acc, appointment) => {
+        if (appointment.status === "scheduled") {
+          acc.scheduledCount += 1;
+        } else if (appointment.status === "pending") {
+          acc.pendingCount += 1;
+        } else if (appointment.status === "cancelled") {
+          acc.cancelledCount += 1;
+        }
+        return acc;
+      },
+      initialCount
+    );
+
+    const data = {
+      totalCount: appointment.total,
+      ...count,
+      document: appointment.documents,
+    };
+
+    return parseStringify(data);
+  } catch (error) {
+    console.log("failed to fetch recent appointments", error);
   }
-  return acc;
- },initialCount)
+};
 
-const data = {
-  totalCount: appointment.total,
-  ...count,
-  document:appointment.documents
-}
-
-return parseStringify(data);
-
-  }catch(error){
-    console.log("failed to fetch recent appointments",error)
+export const updateAppointment = async ({
+  appointmentId,
+  appointment,
+}: UpdateAppointmentParams) => {
+  try {
+    const UpdateAppointment = await databases.updateDocument(
+      apprwiteConfig.databaseId,
+      apprwiteConfig.appointmentCollectionId,
+      appointmentId,
+      appointment
+    );
+    if (!UpdateAppointment) {
+      throw new Error("appointment not found");
+    }
+    revalidatePath("/admin");
+    return parseStringify(UpdateAppointment);
+  } catch (error) {
+    console.log("unable to update appointment", error);
   }
-}
+};

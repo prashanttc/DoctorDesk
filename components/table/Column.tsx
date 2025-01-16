@@ -40,22 +40,31 @@ export const columns: ColumnDef<Appointment>[] = [
     },
     {
         accessorKey: "primaryPhysician",
-        header:()=> "Doctor",
+        header: () => "Doctor",
         cell: ({ row }) => {
-            const doctor = Doctors.find((doc)=> doc.name === row.original.primaryPhysician)
+            const doctor = Doctors.find((doc) => doc.name === row.original.primaryPhysician)
             return <div className="flex  items-center gap-3">
-              <Image src={doctor?.image!} height={100} width={100} alt="doctor" className="size-8"/>
-                </div>
+                <Image src={doctor!.image} height={100} width={100} alt="doctor" className="size-8" />
+            </div>
         }
     },
     {
         id: "actions",
-        header:()=> <div className="pl-4">Actions</div>,
+        header: () => <div className="pl-4">Actions</div>,
         cell: ({ row }) => {
             return (
-         <div className="flex gap-1">
-            <AppointmentModal/>
-         </div>
+                <div className="flex gap-1">
+                    <AppointmentModal type='schedule'
+                     patientId={row.original.patient.$id} 
+                     userId={row.original.userId} 
+                     appointment={row.original}
+                 />
+                    <AppointmentModal type='cancel'
+                       patientId={row.original.patient.$id} 
+                       userId={row.original.userId} 
+                       appointment={row.original}
+                     />
+                </div>
             )
         },
     },
