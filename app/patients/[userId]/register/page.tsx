@@ -5,7 +5,8 @@ import React from 'react'
 
 export const dynamic = 'force-dynamic';
 
-const register = async({ params:{userId}}:SearchParamProps) => {
+const register = async({ params}:SearchParamProps) => {
+  const {userId} = params;
   const user = await getUser(userId);
   return (
     <div className="flex h-screen max-h-screen remove-scrollbar">

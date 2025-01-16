@@ -12,7 +12,8 @@ type SearchParamProps = {
   };
 };
 
-const NewAppointment = async ({ params: { userId } }: SearchParamProps) => {
+const NewAppointment = async ({ params }: SearchParamProps) => {
+  const { userId } = params;
   const patient = await getPatient(userId);
   return (
     <div className="flex h-screen max-h-screen remove-scrollbar">
