@@ -5,7 +5,12 @@ import React from 'react'
 
 export const dynamic = 'force-dynamic';
 
-const register = async({ params}:SearchParamProps) => {
+type RegisterProps = {
+  params: { userId: string };
+};
+
+
+const Register = async({ params}:RegisterProps) => {
   const {userId} = params;
   const user = await getUser(userId);
   return (
@@ -26,5 +31,5 @@ const register = async({ params}:SearchParamProps) => {
   )
 }
 
-export default register
+export default Register
     

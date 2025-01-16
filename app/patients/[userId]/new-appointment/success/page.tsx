@@ -7,7 +7,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-const Success = async ({ params, searchParams }: SearchParamProps) => {
+type SuccessProps = {
+    params: { userId: string };
+    searchParams: { appointmentId?: string }; 
+  };
+
+const Success = async ({ params, searchParams }: SuccessProps) => {
     const {userId} = params;
     const appointmentId = (searchParams?.appointmentId as string) || "";
     const appointment = await getAppointment(appointmentId);

@@ -6,13 +6,11 @@ import React from 'react';
 
 export const dynamic = 'force-dynamic';
 
-type SearchParamProps = {
-  params: {
-    userId: string;
-  };
+type NewAppointmentProps = {
+  params: { userId: string }; 
 };
 
-const NewAppointment = async ({ params }: SearchParamProps) => {
+const NewAppointment = async ({ params }: NewAppointmentProps) => {
   const { userId } = params;
   const patient = await getPatient(userId);
   return (
