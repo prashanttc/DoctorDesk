@@ -15,7 +15,7 @@ import Image from "next/image";
 import { Doctors } from "@/constant";
 import { createAppointment } from "@/lib/actions/appointment.actions";
 
-const AppointmentForm = ({ userId, patientId, type }: { userId: string; patientId: string; type: "create" | "update" | "cancel" }) => {
+const AppointmentForm = ({ userId, patientId, type }: { userId: string; patientId: string; type: "create" | "schedule" | "cancel" }) => {
     const formSchema = getAppointmentSchema(type);
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
@@ -34,7 +34,7 @@ const AppointmentForm = ({ userId, patientId, type }: { userId: string; patientI
         setIsLoading(true)
         let status;
         switch (type) {
-            case 'create':
+            case 'schedule':
                 status = 'scheduled'
                 break;
             case 'cancel':
@@ -71,13 +71,11 @@ const AppointmentForm = ({ userId, patientId, type }: { userId: string; patientI
         case 'cancel':
             buttonLabel = 'cancel appointment'
             break;
-        case 'create':
-            buttonLabel = 'create appointment'
-            break;
-        case 'update':
-            buttonLabel = 'update appointment'
+        case 'schedule':
+            buttonLabel = 'schedule appointment'
             break;
         default:
+            buttonLabel='Submit Appointment'
             break;
     }
     return (
