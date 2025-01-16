@@ -44,7 +44,6 @@ export const registerPatient = async ({
   ...patient
 }: RegisterUserParams) => {
   try {
-    console.log("ident", apprwiteConfig.bucketId  )
     const inputFile = InputFile.fromBuffer(
       identificationDocument?.get("blobfile") as Blob,
       identificationDocument?.get("fileName") as string
@@ -70,3 +69,18 @@ export const registerPatient = async ({
     console.log(error);
   }
 };
+
+export const getPatient = async (userId:string)=>{
+    try{
+  const patient = await databases.listDocuments(
+    apprwiteConfig.databaseId,
+    apprwiteConfig.patientCollectionId,
+    [Query.equal('userId',userId)]
+  )
+
+  return parseStringify(patient.documents[0]);
+    }
+    catch(error){
+      console.log("error fetching patient",error)
+    }
+}
