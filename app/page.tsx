@@ -3,8 +3,9 @@
   import Image from "next/image";
   import Link from "next/link";
 
-  export default function Home({ searchParams }: SearchParamProps) {
-    const isAdmin = searchParams?.admin === 'true';
+  export default async function Home({ searchParams }: SearchParamProps) {
+    const params = await searchParams
+    const isAdmin =  params?.admin === 'true';
     return (
       <div className="flex h-screen max-h-screen">{isAdmin && <PasskeyModal />}
         <section className="container remove-scrollbar my-auto">

@@ -13,8 +13,9 @@ type SuccessProps = {
   };
 
 const Success = async ({ params, searchParams }: SuccessProps) => {
-    const {userId} = params;
-    const appointmentId = (searchParams?.appointmentId as string) || "";
+    const {userId} = await params;
+    const searchparameter = await searchParams
+    const appointmentId = (searchparameter?.appointmentId as string) || "";
     const appointment = await getAppointment(appointmentId);
     const doctor = Doctors.find((doc)=> doc.name === appointment.primaryPhysician)
     return (    
@@ -24,7 +25,7 @@ const Success = async ({ params, searchParams }: SuccessProps) => {
                     <Image height={1000} width={1000} alt='logo' src='/assets/icons/logo-full.svg' className='h-10 w-fit' />
                 </Link>
                 <section className='flex flex-col items-center'>
-                    <Image src='/assets/gifs/success.gif' height={300} width={280} alt='success' />
+                    <Image src='/assets/gifs/success.gif' height={300} width={280} alt='success' priority/>
                     <h1 className='header mb-6 max-w-[600px] text-center'>
                         your <span className='text-green-500'>appointment request</span> has been successfully submited.</h1>
                     <p>we will be in touch shortly</p>

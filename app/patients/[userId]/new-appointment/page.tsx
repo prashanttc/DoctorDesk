@@ -11,7 +11,7 @@ type NewAppointmentProps = {
 };
 
 const NewAppointment = async ({ params }: NewAppointmentProps) => {
-  const { userId } = params;
+  const { userId } = await params;
   const patient = await getPatient(userId);
   return (
     <div className="flex h-screen max-h-screen remove-scrollbar">

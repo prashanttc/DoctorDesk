@@ -11,7 +11,7 @@ type RegisterProps = {
 
 
 const Register = async({ params}:RegisterProps) => {
-  const {userId} = params;
+  const {userId} =await params;
   const user = await getUser(userId);
   return (
     <div className="flex h-screen max-h-screen remove-scrollbar">
