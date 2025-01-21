@@ -1,14 +1,14 @@
 import { z } from "zod";
 
-export const UserFormValidation = z.object({
-  name: z
+export const UserFormValidation =(type:string)=> z.object({
+  name:type==="sign-up"?z
     .string()
     .min(2, "Name must be at least 2 characters")
-    .max(50, "Name must be at most 50 characters"),
+    .max(50, "Name must be at most 50 characters"):z.string().optional(),
   email: z.string().email("Invalid email address"),
-  phone: z
+  phone: type==="sign-up"?z
     .string()
-    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"),
+    .refine((phone) => /^\+\d{10,15}$/.test(phone), "Invalid phone number"):z.string().optional(),
 });
 
 export const PatientFormValidation = z.object({
