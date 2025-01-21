@@ -28,7 +28,7 @@ const AppointmentForm = ({
     patientId: string;
     type: "create" | "schedule" | "cancel";
     setOpen?: (open: boolean) => void;
-    appointment: Appointment;
+    appointment?: Appointment;
 }) => {
     const formSchema = getAppointmentSchema(type);
     const router = useRouter();
@@ -59,7 +59,7 @@ const AppointmentForm = ({
                 break;
         }
         try {
-            if (type === "create" && patientId) {
+            if (type === "create" && patientId ) {
                 const appointmentData = {
                     userId,
                     patient: patientId,
@@ -76,7 +76,8 @@ const AppointmentForm = ({
                         `/patients/${userId}/new-appointment/success?appointmentId=${appointment.$id}`
                     );
                 }
-            } else {
+            } 
+            if(appointment) {
                 const appointmentToUpdate = {
                     userId,
                     appointmentId: appointment.$id!,
@@ -92,6 +93,9 @@ const AppointmentForm = ({
                     setOpen && setOpen(false);
                     form.reset();
                   }
+            }
+            else{
+                return null;
             }
         } catch (error) {
             console.log("unable to create appointment", error);
