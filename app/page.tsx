@@ -1,13 +1,10 @@
-  import PatientForm from "@/components/forms/PatientForm";
+  import { PageProps } from "@/.next/types/app/page";
+import PatientForm from "@/components/forms/PatientForm";
   import PasskeyModal from "@/components/PasskeyModal";
   import Image from "next/image";
   import Link from "next/link";
 
-  type Pageprops = {
-    searchParams: { admin?: string }; 
-  };
-
-  export default async function Home({ searchParams }: Pageprops) {
+  export default async function Home({ searchParams }: PageProps) {
     const params = await searchParams
     const isAdmin =  params?.admin === 'true';
     return (
