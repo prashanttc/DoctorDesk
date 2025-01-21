@@ -1,3 +1,4 @@
+import { PageProps } from '@/.next/types/app/page';
 import RegisterForm from '@/components/forms/RegisterForm'
 import { getUser } from '@/lib/actions/patient.actions'
 import Image from 'next/image'
@@ -5,12 +6,7 @@ import React from 'react'
 
 export const dynamic = 'force-dynamic';
 
-type RegisterProps = {
-  params: { userId: string };
-};
-
-
-const Register = async({ params}:RegisterProps) => {
+const Register = async({ params}:PageProps) => {
   const {userId} =await params;
   const user = await getUser(userId);
   return (

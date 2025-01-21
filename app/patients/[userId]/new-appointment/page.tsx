@@ -1,3 +1,4 @@
+import { PageProps } from '@/.next/types/app/page';
 import AppointmentForm from '@/components/forms/AppointmentForm';
 import { getPatient } from '@/lib/actions/patient.actions';
 import Image from 'next/image';
@@ -5,12 +6,7 @@ import Link from 'next/link';
 import React from 'react';
 
 export const dynamic = 'force-dynamic';
-
-type NewAppointmentProps = {
-  params: { userId: string }; 
-};
-
-const NewAppointment = async ({ params }: NewAppointmentProps) => {
+const NewAppointment = async ({ params }: PageProps) => {
   const { userId } = await params;
   const patient = await getPatient(userId);
   return (

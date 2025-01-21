@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
+import { PageProps } from '@/.next/types/app/page'
 import { Button } from '@/components/ui/button'
 import { Doctors } from '@/constant'
 import { getAppointment } from '@/lib/actions/appointment.actions'
@@ -7,12 +8,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-type SuccessProps = {
-    params: { userId: string };
-    searchParams: { appointmentId?: string }; 
-  };
 
-const Success = async ({ params, searchParams }: SuccessProps) => {
+const Success = async ({ params, searchParams }: PageProps) => {
     const {userId} = await params;
     const searchparameter = await searchParams
     const appointmentId = (searchparameter?.appointmentId as string) || "";
