@@ -3,7 +3,11 @@
   import Image from "next/image";
   import Link from "next/link";
 
-  export default async function Home({ searchParams }: SearchParamProps) {
+  type Pageprops = {
+    searchParams: { admin?: string }; 
+  };
+
+  export default async function Home({ searchParams }: Pageprops) {
     const params = await searchParams
     const isAdmin =  params?.admin === 'true';
     return (
